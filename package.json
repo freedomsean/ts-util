@@ -1,0 +1,35 @@
+{
+  "name": "ts-util",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/test.js",
+  "scripts": {
+    "build": "tsc",
+    "pretest": "npm run build",
+    "test": "jest --detectOpenHandles   --config jest.config.json",
+    "posttest": "sh bin/test-after",
+    "test-ci": "npx jest --detectOpenHandles --config jest.config.json"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "author": "freedomsean <t101598009@ntut.org.tw> (https://freedomsean.github.io/myself/)",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "redis": "^2.8.0",
+    "typescript": "^3.6.2",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.0",
+    "@types/jest": "^24.0.15",
+    "@types/redis": "^2.8.13",
+    "@types/supertest": "^2.0.8",
+    "@types/winston": "^2.4.4",
+    "jest": "^24.8.0",
+    "supertest": "^4.0.2",
+    "tslint": "^5.18.0"
+  }
+}

@@ -1,0 +1,41 @@
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.5
+jobs:
+  build:
+    working_directory: /etc/app
+    docker:
+      - image: centos:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            curl -fsSL https://get.docker.com -o get-docker.sh &&  sh get-docker.sh   &&  mkdir -p /etc/app/coverage &&  curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build -t app .
+      - run:
+          name: Run dependencies
+          command: |
+            docker-compose up -d
+      - run:
+          name: Run testing
+          command: |
+            docker run -it --name app --net app_default  --link app_redis_1:redis  -e redis=redis app
+      - run:
+          name: Copy coverage
+          command: |
+            docker cp app:/etc/app/coverage /etc/app/coverage
+      - store_artifacts:
+          path: /etc/app/coverage
+          destination: coverage
+      - run:
+          name: Upload Coverage Results
+          command: |
+            curl -s https://codecov.io/bash | bash -s -- \
+              -t "2e7a5cdc-9c18-4083-9d64-ba2ca16375af" \
+              -p "/etc/app/coverage" \
+              -Z || echo 'Codecov upload failed'
