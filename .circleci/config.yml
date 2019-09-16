@@ -36,6 +36,6 @@ jobs:
           name: Upload Coverage Results
           command: |
             curl -s https://codecov.io/bash | bash -s -- \
-              -t "2e7a5cdc-9c18-4083-9d64-ba2ca16375af" \
+              -t "${CODE_COV_TOKEN}" \
               -p "/etc/app/coverage" \
               -Z || echo 'Codecov upload failed'
