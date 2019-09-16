@@ -1,6 +1,6 @@
 # ts-util
 
-
+[![CircleCI](https://circleci.com/gh/freedomsean/ts-util.svg?style=svg)](https://circleci.com/gh/freedomsean/ts-util) [![codecov](https://codecov.io/gh/freedomsean/ts-util/branch/master/graph/badge.svg)](https://codecov.io/gh/freedomsean/ts-util)
 
 This is a utility library by NodeJS and Typescript
 
