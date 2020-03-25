@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/test.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "pretest": "npm run build",
     "test": "jest --detectOpenHandles   --config jest.config.json",
     "posttest": "sh bin/test-after",
@@ -18,7 +18,6 @@
     "axios": "^0.19.0",
     "express": "^4.17.1",
     "redis": "^2.8.0",
-    "typescript": "^3.6.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -30,6 +29,7 @@
     "@types/winston": "^2.4.4",
     "jest": "^25.1.0",
     "supertest": "^4.0.2",
-    "tslint": "^5.18.0"
+    "tslint": "^5.18.0",
+    "typescript": "^3.8.3"
   }
 }
