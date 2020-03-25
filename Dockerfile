@@ -19,4 +19,4 @@ COPY --from=builder /etc/app/package.json .
 COPY --from=builder /etc/app/jest.config.json .
 COPY --from=builder /etc/app/ssh-key /etc/app/ssh-key
 RUN mkdir testdata && chmod -R 777 bin
-# CMD npm run test-ci
+CMD npm run test-ci
