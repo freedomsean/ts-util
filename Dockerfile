@@ -1,7 +1,9 @@
-FROM node:10.16.0-jessie AS builder
+FROM node:lts-alpine AS builder
 WORKDIR /etc/app
 ADD . ./
-RUN apt-get update && apt-get -y install openssh-client && mkdir ssh-key && ssh-keygen -q -t rsa -N '' -f /etc/app/ssh-key/id_rsa && ssh-keygen -f /etc/app/ssh-key/id_rsa.pub -m "PEM" -e > /etc/app/ssh-key/public.pem &&  npm install 
+RUN apk --no-cache add --virtual native-deps \
+  g++ gcc libgcc libstdc++ linux-headers autoconf automake make nasm python git && \
+  npm install --quiet node-gyp -g
 RUN npm run build
 
 
