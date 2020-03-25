@@ -1,16 +1,23 @@
 {
-  "version": "2.1.0",
-  "include": [ "./src" ],
-  "exclude": [ "./dist", "node_modules/*" ],
   "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "skipLibCheck": true,
+    "pretty": true,
     "module": "commonjs",
-    "noImplicitAny": true,
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "outDir": "./dist/",
-    "declaration": true,
-    "target": "es6",
+    "moduleResolution": "node",
+    "inlineSourceMap": true,
     "experimentalDecorators": true,
-    "inlineSourceMap": true
-  }
+    "target": "es6",
+    "lib": [
+      "esnext"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests/**/*.ts"
+  ]
 }

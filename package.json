@@ -8,7 +8,7 @@
     "pretest": "npm run build",
     "test": "jest --detectOpenHandles  --config jest.config.json",
     "posttest": "sh bin/test-after",
-    "test-ci": "npx jest --detectOpenHandles --config jest.config.json"
+    "test-ci": "npx jest --config jest.config.json"
   },
   "files": [
     "dist/**/*"
