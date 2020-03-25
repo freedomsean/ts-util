@@ -1,7 +1,7 @@
 import { ErrorHandler } from "../../middleware/ErrorHandler";
 import { HttpSuccessResponse, HttpSystemErrorResponse, HttpNotModifyResponse } from "../../middleware/HttpResponse";
 import * as express from "express";
-import { Express, Request, Response, NextFunction } from "express";
+import { Express, Response, NextFunction } from "express";
 import supertest = require("supertest");
 
 let successTemplate: any = {
@@ -22,7 +22,7 @@ const API_SYSTEM_ERROR = "/system_error";
 
 
 describe("ErrorHandler", () => {
-  let app: Express;
+  let app: Express | undefined;
 
   beforeAll(() => {
     app = express();

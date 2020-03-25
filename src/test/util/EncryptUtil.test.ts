@@ -4,7 +4,7 @@ import { EncryptUtil, WriteEncryptMessageStream, EncryptTransformStream } from "
 import * as path from "path";
 import * as crypto from "crypto";
 import * as zlib from "zlib";
-import { createReadStream, createWriteStream, fstat } from "fs";
+import { createReadStream, createWriteStream } from "fs";
 
 // ssh-keygen -f ~/.ssh/id_rsa.pub -m "PEM" -e > public.pem
 const publicKeyPath = "./ssh-key/public.pem";

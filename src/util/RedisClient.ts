@@ -22,11 +22,11 @@ export class RedisOptionMissedError extends Error {
 
 export class RedisClient {
 
-  private static instance: RedisClient;
+  private static instance: RedisClient | undefined;
   private static connectOption: redis.ClientOpts;
   private static isInit: boolean = false;
 
-  private client: redis.RedisClient;
+  private client: redis.RedisClient | undefined;
 
   /**
    * To get the instance of redis client. Before calling getInstance, it must call setConnectOption
@@ -56,7 +56,7 @@ export class RedisClient {
   }
 
   private constructor(options?: redis.ClientOpts) {
-    RedisClient.connectOption = options;
+    RedisClient.connectOption = options ?? {};
     this.createClient();
   }
 
@@ -76,11 +76,11 @@ export class RedisClient {
    * @param key
    */
   async get(key: string): Promise<string> {
-    if (!this.client.connected) {
+    if (!this.client!.connected) {
       this.createClient();
     }
 
-    const getFunc = util.promisify(this.client.get.bind(this.client));
+    const getFunc = util.promisify(this.client!.get.bind(this.client));
     const data = await getFunc(key);
     return data;
   }
@@ -93,10 +93,10 @@ export class RedisClient {
    * @param duration
    */
   async set(key: string, value: any, mode: string = "EX", duration: number = 86400): Promise<void> {
-    if (!this.client.connected) {
+    if (!this.client?.connected) {
       this.createClient();
     }
-    const setFunc = util.promisify(this.client.set.bind(this.client));
+    const setFunc: (...args: any[]) => {} = util.promisify(this.client!.set.bind(this.client));
     await setFunc(key, value, mode, duration);
   }
 
@@ -105,10 +105,10 @@ export class RedisClient {
    * @param keys
    */
   async del(keys: string | string[]): Promise<void> {
-    if (!this.client.connected) {
+    if (!this.client!.connected) {
       this.createClient();
     }
-    const delFunc = util.promisify(this.client.del.bind(this.client));
+    const delFunc: (...args: any[]) => {} = util.promisify(this.client!.del.bind(this.client));
     await delFunc(keys);
   }
 
@@ -117,8 +117,8 @@ export class RedisClient {
    * disconnect
    */
   async quit(): Promise<void> {
-    if (this.client.connected) {
-      const quitFunc = util.promisify(this.client.quit.bind(this.client));
+    if (this.client?.connected) {
+      const quitFunc = util.promisify(this.client!.quit.bind(this.client));
       await quitFunc();
       delete this.client;
       RedisClient.instance = undefined;
@@ -129,8 +129,8 @@ export class RedisClient {
    * end without any waiting
    */
   async end(flush?: boolean): Promise<void> {
-    if (this.client.connected) {
-      const endFunc = util.promisify(this.client.end.bind(this.client));
+    if (this.client?.connected) {
+      const endFunc = util.promisify(this.client!.end.bind(this.client));
       await endFunc(flush);
       delete this.client;
       this.client = undefined;

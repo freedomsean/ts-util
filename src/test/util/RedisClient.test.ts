@@ -11,7 +11,6 @@ let rawGetFunc: Function;
 let rawSetFunc: Function;
 let rawDelFunc: Function;
 let rawQuitFunc: Function;
-let rawEndFunc: Function;
 
 describe("Test RedisClient without setting connection option", () => {
   test("Test RedisClient without setting connection option", async (done: jest.DoneCallback) => {
@@ -34,7 +33,6 @@ describeExecutableTest("Test RedisClient", () => {
       port: PORT
     });
     rawQuitFunc = util.promisify(redisRawClient.quit.bind(redisRawClient));
-    rawEndFunc = util.promisify(redisRawClient.end.bind(redisRawClient));
     rawGetFunc = util.promisify(redisRawClient.get.bind(redisRawClient));
     rawSetFunc = util.promisify(redisRawClient.set.bind(redisRawClient));
     rawDelFunc = util.promisify(redisRawClient.del.bind(redisRawClient));

@@ -10,12 +10,18 @@
  * This file can be used in the commercial or personal purpose.
  * If you want to use this, please send a message for me and keep the information in the header.
  */
-
-import { EncryptUtil, WriteEncryptMessageStream, EncryptTransformStream, WriteDecryptMessageStream, DecryptTransformStream } from "./EncryptUtil";
 import * as fs from "fs";
-import * as util from "util";
 import * as Path from "path";
-import { Readable, Writable, Stream, Transform } from "stream";
+import { Stream, Transform, Writable } from "stream";
+import * as util from "util";
+
+import {
+  DecryptTransformStream,
+  EncryptTransformStream,
+  WriteDecryptMessageStream,
+  WriteEncryptMessageStream,
+} from "./EncryptUtil";
+
 
 export type WriteFileOptions = {
   encoding?: string | null;
@@ -161,7 +167,7 @@ export class FileUtil {
    * @param options
    */
   static async writeFile(path: string, content: string | Buffer, options?: WriteFileOptions): Promise<void> {
-    if (typeof options === "object" && options.autoMkdir) {
+    if (typeof options === "object" && options?.autoMkdir) {
       const dirName = Path.dirname(path);
       await FileUtil.mkdir(dirName, { recursive: true });
     }

@@ -16,7 +16,7 @@ describe("Test RequestUtil", () => {
       const method: "GET" = "GET";
 
       try {
-        const result = await RequestUtil.request({ method, url: errorUrl });
+        await RequestUtil.request({ method, url: errorUrl });
         expect({}).toThrow("must be error");
       } catch (error) {
         expect(error).toBeInstanceOf(RequestError);
