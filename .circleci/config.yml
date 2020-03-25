@@ -5,7 +5,7 @@ jobs:
   build:
     working_directory: /etc/app
     docker:
-      - image: centos:latest
+      - image: centos:7
     steps:
       - checkout
       - setup_remote_docker
