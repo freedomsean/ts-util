@@ -21,7 +21,7 @@ npm install
 - generate ssh key for EncryptUtil, if you need it
   
 ```
-apt-get update && apt-get -y install openssh-client && mkdir ssh-key && ssh-keygen -q -t rsa -N '' -f /etc/app/ssh-key/id_rsa && ssh-keygen -f /etc/app/ssh-key/id_rsa.pub -m "PEM" -e > /etc/app/ssh-key/public.pem
+apt-get update && apt-get -y install openssh-client && mkdir ssh-key && ssh-keygen -q  -m PEM  -t rsa -N '' -f /etc/app/ssh-key/id_rsa && ssh-keygen -f /etc/app/ssh-key/id_rsa.pub -m PEM -e > /etc/app/ssh-key/public.pem
 ```
 
 - make `testdata` directory in the project dir
