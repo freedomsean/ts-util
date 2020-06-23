@@ -20,4 +20,4 @@ COPY --from=builder /etc/app/package.json .
 COPY --from=builder /etc/app/jest.config.json .
 COPY --from=builder /etc/app/ssh-key /etc/app/ssh-key
 COPY --from=builder /etc/app/testdata /etc/app/testdata
-CMD npm run test-ci
+CMD npm run test

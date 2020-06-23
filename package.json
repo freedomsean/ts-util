@@ -7,12 +7,9 @@
     "prebuild": "npx rimraf dist && npm run lint",
     "build": "npx tsc --build tsconfig.json",
     "build:cloud": "npx tsc --build tsconfig.json",
-    "start": "npx ts-node-dev ./src/app.ts",
-    "start:cloud": "npx pm2-docker start ecosystem.config.js",
     "lint": "npx eslint --fix ./src/**/*.ts",
     "pretest": "npm run build",
-    "test": "npx jest --config jest.config.json",
-    "test:ci": "npx jest --config jest.config.json"
+    "test": "npx jest --config jest.config.json"
   },
   "files": [
     "dist/**/*"

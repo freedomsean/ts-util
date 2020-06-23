@@ -11,9 +11,17 @@ import {
 } from '../../util/file-util';
 import * as fs from 'fs';
 
+const descTest = (name: string, func: Function) => {
+  describe(name, () => {
+    test(name, async () => {
+      await func();
+    });
+  });
+};
+
 describe('Test FileUtil', () => {
   describe('Test writeFile', () => {
-    test('Test success to writeFile', async () => {
+    descTest('Test success to writeFile', async () => {
       const content = 'I am bbb';
       const normalPath = './testdata/bbb.txt';
 
@@ -22,7 +30,7 @@ describe('Test FileUtil', () => {
       fs.unlinkSync(normalPath);
     });
 
-    test('Test success to writeFile with autoMkdir', async () => {
+    descTest('Test success to writeFile with autoMkdir', async () => {
       const content = 'I am eee';
       const longPath = './testdata/aaa/bbb/ccc/ddd/eee.txt';
 
@@ -39,7 +47,7 @@ describe('Test FileUtil', () => {
   describe('Test unlink', () => {
     const content = 'I am bbb';
 
-    test('Test success to unlink', async () => {
+    descTest('Test success to unlink', async () => {
       const path = './testdata/bbb.txt';
 
       fs.writeFileSync(path, content);
@@ -48,7 +56,7 @@ describe('Test FileUtil', () => {
       expect(isExist).toBe(false);
     });
 
-    test('Test success to to unlink recursively', async () => {
+    descTest('Test success to to unlink recursively', async () => {
       const longPath = './testdata/aaa/bbb/ccc/ddd/eee.txt';
       const mainDir = './testdata/aaa';
 
@@ -59,7 +67,7 @@ describe('Test FileUtil', () => {
       expect(isExist).toBe(false);
     });
 
-    test('Test unlink the file which does not exist', async () => {
+    descTest('Test unlink the file which does not exist', async () => {
       const path = './testdata/aaa/bbb/zzz/ddd/eee.txt';
 
       const isExist = fs.existsSync(path);
@@ -68,7 +76,7 @@ describe('Test FileUtil', () => {
   });
 
   describe('Test readFile', () => {
-    test('Test success to readFile', async () => {
+    descTest('Test success to readFile', async () => {
       const path = './testdata/bbb.txt';
       const content = 'I am bbb';
 
@@ -78,7 +86,7 @@ describe('Test FileUtil', () => {
       fs.unlinkSync(path);
     });
 
-    test('Test read the file which does not exist', async () => {
+    descTest('Test read the file which does not exist', async () => {
       const path = './testdata/aaa/bbb/ccc/ddd/eee.txt';
 
       await expect(FileUtil.readFile(path)).rejects.toThrowError(FileNotFoundError);
@@ -88,7 +96,7 @@ describe('Test FileUtil', () => {
   describe('Test readDir', () => {
     const path = './testdata';
 
-    test('Test success to read dir which have dir and files', async () => {
+    descTest('Test success to read dir which have dir and files', async () => {
       fs.mkdirSync(path + '/aaa');
       fs.mkdirSync(path + '/bbb/ccc/ddd', { recursive: true });
       fs.writeFileSync(path + '/ddd.txt', 'aaabbbccc');
@@ -106,7 +114,7 @@ describe('Test FileUtil', () => {
       fs.rmdirSync(path + '/bbb');
     });
 
-    test('Test read the dir which does not exist', async () => {
+    descTest('Test read the dir which does not exist', async () => {
       const path = './testdata/aaa/bbb/ccc/ddd';
 
       await expect(FileUtil.readdir(path)).rejects.toThrowError(FileNotFoundError);
@@ -114,7 +122,7 @@ describe('Test FileUtil', () => {
   });
 
   describe('Test lstat', () => {
-    test('Test success to lstat file', async () => {
+    descTest('Test success to lstat file', async () => {
       const path = './testdata/bbb.txt';
       const content = 'I am bbb';
 
@@ -124,14 +132,14 @@ describe('Test FileUtil', () => {
       fs.unlinkSync(path);
     });
 
-    test('Test success to lstat dir', async () => {
+    descTest('Test success to lstat dir', async () => {
       const mainTestDir = './testdata';
 
       const stats = await FileUtil.lstat(mainTestDir);
       expect(stats.isDirectory()).toBe(true);
     });
 
-    test('Test lstat the dir which does not exist', async () => {
+    descTest('Test lstat the dir which does not exist', async () => {
       const path = './testdata/aaa/bbb/zzz/ddd';
 
       await expect(FileUtil.lstat(path)).rejects.toThrowError(FileNotFoundError);
@@ -139,14 +147,14 @@ describe('Test FileUtil', () => {
   });
 
   describe('Test getDirName', () => {
-    test('Test getDirName', () => {
+    descTest('Test getDirName', () => {
       expect(FileUtil.getDirName('./testdata')).toBe('.');
       expect(FileUtil.getDirName('./testdata/aaa')).toBe('./testdata');
     });
   });
 
   describe('Test getBaseName', () => {
-    test('Test getBaseName', () => {
+    descTest('Test getBaseName', () => {
       expect(FileUtil.getBaseName('./testdata')).toBe('testdata');
       expect(FileUtil.getBaseName('./testdata/aaa.txt')).toBe('aaa.txt');
     });
@@ -155,7 +163,7 @@ describe('Test FileUtil', () => {
   describe('Test rename', () => {
     const mainPath = './testdata';
 
-    test('Test rename the directory which has a file', async () => {
+    descTest('Test rename the directory which has a file', async () => {
       fs.mkdirSync(mainPath + '/aaa');
       fs.writeFileSync(mainPath + '/aaa/ccc.txt', 'ccc');
       await FileUtil.rename(mainPath + '/aaa', mainPath + '/bbb');
@@ -165,7 +173,7 @@ describe('Test FileUtil', () => {
       fs.rmdirSync(mainPath + '/bbb');
     });
 
-    test('Test rename the directory, but the new path is already existed', async () => {
+    descTest('Test rename the directory, but the new path is already existed', async () => {
       fs.mkdirSync(mainPath + '/aaa');
       fs.mkdirSync(mainPath + '/bbb');
       await expect(FileUtil.rename(mainPath + '/aaa', mainPath + '/bbb')).rejects.toThrowError(
@@ -175,7 +183,7 @@ describe('Test FileUtil', () => {
       fs.rmdirSync(mainPath + '/bbb');
     });
 
-    test('Test rename the directory, but the old path is not existed', async () => {
+    descTest('Test rename the directory, but the old path is not existed', async () => {
       await expect(FileUtil.rename(mainPath + '/aaa', mainPath + '/bbb')).rejects.toThrowError(FileNotFoundError);
     });
   });
@@ -189,7 +197,7 @@ describe('Test FileUtil', () => {
     const privateKeyPath = './ssh-key/id_rsa';
 
     describe('Test success to copy file with strategy', () => {
-      test(`Test success to copy file with strategy`, async () => {
+      descTest(`Test success to copy file with strategy`, async () => {
         const to = './testdata/fff.txt';
         const fileFrom = './testdata/bbb.txt';
         const strategies: CopyStrategy[] = [
@@ -236,7 +244,7 @@ describe('Test FileUtil', () => {
           EncryptUtil.encryptString(publicKeyPath, content).then((result) => result + '\n')
         ]);
         for (let i = 0; i < strategies.length; i++) {
-          test(`Test ${strategies.constructor.name} success to copy directory ${c.name}`, async () => {
+          descTest(`Test ${strategies.constructor.name} success to copy directory ${c.name}`, async () => {
             inputs = await inputs;
             fs.mkdirSync(underDirDirectoryFrom, { recursive: true });
             fs.writeFileSync(underDirFileFrom, inputs[i]);
@@ -281,21 +289,24 @@ describe('Test FileUtil', () => {
           EncryptUtil.encryptString(publicKeyPath, content).then((result) => result + '\n')
         ]);
         for (let i = 0; i < strategies.length; i++) {
-          test(`Test ${strategies[i].constructor.name} copy nothing ${c.name}, due to the excluding list`, async () => {
-            inputs = await inputs;
-            fs.mkdirSync(underDirDirectoryFrom, { recursive: true });
-            fs.writeFileSync(underDirFileFrom, inputs[i]);
-            await FileUtil.copy(strategies[i], { excludes: excludeList });
+          descTest(
+            `Test ${strategies[i].constructor.name} copy nothing ${c.name}, due to the excluding list`,
+            async () => {
+              inputs = await inputs;
+              fs.mkdirSync(underDirDirectoryFrom, { recursive: true });
+              fs.writeFileSync(underDirFileFrom, inputs[i]);
+              await FileUtil.copy(strategies[i], { excludes: excludeList });
 
-            fs.unlinkSync(underDirFileFrom);
-            fs.rmdirSync(`./testdata/rrr/iii/jjj/rrr`);
-            fs.rmdirSync(`./testdata/rrr/iii/jjj`);
-            fs.rmdirSync(`./testdata/rrr/iii`);
-            fs.rmdirSync(`./testdata/rrr`);
+              fs.unlinkSync(underDirFileFrom);
+              fs.rmdirSync(`./testdata/rrr/iii/jjj/rrr`);
+              fs.rmdirSync(`./testdata/rrr/iii/jjj`);
+              fs.rmdirSync(`./testdata/rrr/iii`);
+              fs.rmdirSync(`./testdata/rrr`);
 
-            // Be failed to copy.
-            expect(fs.existsSync(`${c.unlinkMainDir}/iii/jjj/bbb.txt`)).toBe(false);
-          });
+              // Be failed to copy.
+              expect(fs.existsSync(`${c.unlinkMainDir}/iii/jjj/bbb.txt`)).toBe(false);
+            }
+          );
         }
       }
     });
@@ -306,7 +317,7 @@ describe('Test FileUtil', () => {
     const publicKeyPath = './ssh-key/public.pem';
     const privateKeyPath = './ssh-key/id_rsa';
 
-    test('Test copyFileWithEncryption with a file', async () => {
+    descTest('Test copyFileWithEncryption with a file', async () => {
       const to = './testdata/ddd.txt';
       const fileFrom = './testdata/bbb.txt';
 
@@ -319,7 +330,7 @@ describe('Test FileUtil', () => {
       fs.unlinkSync(fileFrom);
     });
 
-    test('Test copyFileWithEncryption with a directory', async () => {
+    descTest('Test copyFileWithEncryption with a directory', async () => {
       const to = './testdata/ddd.txt';
       const fileFrom = './testdata';
 
@@ -332,7 +343,7 @@ describe('Test FileUtil', () => {
     const publicKeyPath = './ssh-key/public.pem';
     const privateKeyPath = './ssh-key/id_rsa';
 
-    test('Test copyFileWithDecryption with a file', async () => {
+    descTest('Test copyFileWithDecryption with a file', async () => {
       const to = './testdata/ddd.txt';
       const fileFrom = './testdata/bbb.txt';
 
@@ -345,7 +356,7 @@ describe('Test FileUtil', () => {
       fs.unlinkSync(fileFrom);
     });
 
-    test('Test copyFileWithDecryption with a directory', async () => {
+    descTest('Test copyFileWithDecryption with a directory', async () => {
       const to = './testdata/ddd.txt';
       const fileFrom = './testdata';
 

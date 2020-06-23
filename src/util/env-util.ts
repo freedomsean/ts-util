@@ -24,7 +24,6 @@ export class EnvUtil {
   static getEnv(envName: string): string {
     const data: string | undefined = process.env[envName];
     if (typeof data === 'undefined') {
-      console.log(envName, 'is not given');
       throw new EnvIsNotGivenError(envName);
     }
     return data;

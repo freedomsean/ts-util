@@ -19,7 +19,9 @@ describe('Test EnvUtil', () => {
     });
 
     test('Test get the env which is not given', () => {
-      expect(EnvUtil.getEnv('NO_THIS_ENV')).rejects.toThrowError(EnvIsNotGivenError);
+      expect(() => {
+        EnvUtil.getEnv('NO_THIS_ENV');
+      }).toThrowError(EnvIsNotGivenError);
     });
   });
 });
