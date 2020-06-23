@@ -9,7 +9,8 @@
     "build:cloud": "npx tsc --build tsconfig.json",
     "lint": "npx eslint --fix ./src/**/*.ts",
     "pretest": "npm run build",
-    "test": "npx jest --config jest.config.json"
+    "test": "npx jest --config jest.config.json",
+    "test:ci": "npx jest --config jest.config.json"
   },
   "files": [
     "dist/**/*"
