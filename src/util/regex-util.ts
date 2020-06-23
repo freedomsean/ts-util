@@ -13,14 +13,15 @@
 
 export class RegexUtil {
   /**
-   * To get the value of the match part in Regex
-   * @param regex
-   * @param str
-   * @param tokenCount how many token you used
+   * To get the value of the match part in Regex.
+   *
+   * @param {RegExp} regex - Regex.
+   * @param {string} str - Checked string.
+   * @param {number} tokenCount - How many token you used.
    */
   static getMatchPartVal(regex: RegExp, str: string, tokenCount: number = 1): string[] {
     const matches: string[] = [];
-    if (typeof str !== "string" || str.length === 0) {
+    if (typeof str !== 'string' || str.length === 0) {
       return matches;
     }
 

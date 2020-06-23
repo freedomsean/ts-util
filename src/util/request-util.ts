@@ -11,10 +11,10 @@
  * If you want to use this, please send a message for me and keep the information in the header.
  */
 
-import Axios, { Method } from "axios";
+import Axios, { Method } from 'axios';
 
 /**
- * HTTP ResponseData
+ * HTTP ResponseData.
  */
 export interface ResponseData {
   data: any;
@@ -24,7 +24,7 @@ export interface ResponseData {
 }
 
 /**
- * HTTP RequestData
+ * HTTP RequestData.
  */
 export interface RequestData {
   method: Method;
@@ -34,28 +34,23 @@ export interface RequestData {
 }
 
 /**
- * The HTTP Request Error
+ * The HTTP Request Error.
  */
 export class RequestError extends Error {
-  error: any;
-  requestData: RequestData;
-
   constructor(requestData: RequestData, error: any) {
-    super();
-    this.error = error;
-    this.requestData = requestData;
-  }
-
-  toString() {
-    return `Request [${this.requestData.method}] Error, url: ${this.requestData.url}, reason: ${this.error}`;
+    super(`Request [${requestData.method}] Error, url: ${requestData.url}, reason: ${error}`);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, RequestError.prototype);
   }
 }
 
 export class RequestUtil {
   /**
-   * Do Http Request
-   * @param requestData
-   * @throws RequestError
+   * Do Http Request.
+   *
+   * @param {any} requestData - Request data.
+   * @throws RequestError.
    */
   static async request(requestData: RequestData): Promise<ResponseData> {
     try {

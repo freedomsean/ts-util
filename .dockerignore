@@ -4,3 +4,6 @@ dist
 ssh-key
 coverage
 testdata
+.git
+.circleci
+.env

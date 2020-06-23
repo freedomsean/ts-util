@@ -1,27 +1,26 @@
-import { ErrorHandler } from "../../middleware/ErrorHandler";
-import { HttpSuccessResponse, HttpSystemErrorResponse, HttpNotModifyResponse } from "../../middleware/HttpResponse";
-import * as express from "express";
-import { Express, Response, NextFunction } from "express";
-import supertest = require("supertest");
+import { ErrorHandler } from '../../middleware/error-handler';
+import { HttpSuccessResponse, HttpSystemErrorResponse, HttpNotModifyResponse } from '../../middleware/http-response';
+import * as express from 'express';
+import { Express, Response, NextFunction } from 'express';
+import * as supertest from 'supertest';
 
-let successTemplate: any = {
+const successTemplate: any = {
   code: 200,
   data: {}
 };
 
-let errorTemplate: any = {
+const errorTemplate: any = {
   code: 500,
   error: {}
 };
 
-const API_SUCCESS_WITHOUT_CODE = "/success_without_code";
-const API_SUCCESS_WITH_STATUS_CODE = "/success_with_code";
-const API_SUCCESS_WITH_BODY_CODE = "/success_with_body_code";
-const API_NOT_MODIFIED = "/NOT_MODIFIED";
-const API_SYSTEM_ERROR = "/system_error";
+const API_SUCCESS_WITHOUT_CODE = '/success_without_code';
+const API_SUCCESS_WITH_STATUS_CODE = '/success_with_code';
+const API_SUCCESS_WITH_BODY_CODE = '/success_with_body_code';
+const API_NOT_MODIFIED = '/NOT_MODIFIED';
+const API_SYSTEM_ERROR = '/system_error';
 
-
-describe("ErrorHandler", () => {
+describe('ErrorHandler', () => {
   let app: Express | undefined;
 
   beforeAll(() => {
@@ -53,10 +52,10 @@ describe("ErrorHandler", () => {
     app = undefined;
   });
 
-  let requestTest = (url: string, statusCode: number, expectedData: any, done: jest.DoneCallback) => {
+  const requestTest = (url: string, statusCode: number, expectedData: any, done: jest.DoneCallback) => {
     supertest(app)
       .get(url)
-      .expect("Content-Type", /json/)
+      .expect('Content-Type', /json/)
       .expect(statusCode)
       .end((err, res: supertest.Response) => {
         if (err) {
@@ -67,29 +66,28 @@ describe("ErrorHandler", () => {
       });
   };
 
-  describe("Test success response", () => {
-    test("Test success response with default code", (done: jest.DoneCallback) => {
-      successTemplate.data = { "abc": 123 };
+  describe('Test success response', () => {
+    test('Test success response with default code', (done: jest.DoneCallback) => {
+      successTemplate.data = { abc: 123 };
       requestTest(API_SUCCESS_WITHOUT_CODE, successTemplate.code, successTemplate, done);
     });
 
-    test("Test success response with custom status code", (done: jest.DoneCallback) => {
+    test('Test success response with custom status code', (done: jest.DoneCallback) => {
       successTemplate.code = 203;
-      successTemplate.data = { "abc": 456 };
+      successTemplate.data = { abc: 456 };
       requestTest(API_SUCCESS_WITH_STATUS_CODE, successTemplate.code, successTemplate, done);
     });
 
-    test("Test success response with custom body code", (done: jest.DoneCallback) => {
+    test('Test success response with custom body code', (done: jest.DoneCallback) => {
       successTemplate.code = 999;
-      successTemplate.data = { "abc": 456 };
-      // diff code between body and http status
+      successTemplate.data = { abc: 456 };
+      // Diff code between body and http status.
       requestTest(API_SUCCESS_WITH_BODY_CODE, 200, successTemplate, done);
     });
   });
 
-
-  describe("Test not modified response", () => {
-    test("Test not modified response", (done: jest.DoneCallback) => {
+  describe('Test not modified response', () => {
+    test('Test not modified response', (done: jest.DoneCallback) => {
       // 304 won't have any response data, so it also does not have any content type
       supertest(app)
         .get(API_NOT_MODIFIED)
@@ -103,9 +101,9 @@ describe("ErrorHandler", () => {
     });
   });
 
-  describe("Test system error response", () => {
-    test("Test  system error response", (done: jest.DoneCallback) => {
-      errorTemplate.error = { "lll": 123 };
+  describe('Test system error response', () => {
+    test('Test  system error response', (done: jest.DoneCallback) => {
+      errorTemplate.error = { lll: 123 };
       requestTest(API_SYSTEM_ERROR, errorTemplate.code, errorTemplate, done);
     });
   });

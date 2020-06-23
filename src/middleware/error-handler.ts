@@ -11,15 +11,16 @@
  * If you want to use this, please send a message for me and keep the information in the header.
  */
 
-import { Request, Response, NextFunction } from "express";
-import { HttpResponse } from "./HttpResponse";
+import { Request, Response, NextFunction } from 'express';
+import { HttpResponse } from './http-response';
 
 /**
- * The middleware to process the response, to make all response have the same structure
- * @param data
- * @param req
- * @param res
- * @param next
+ * The middleware to process the response, to make all response have the same structure.
+ *
+ * @param {any} data - Processed data.
+ * @param {Request} req - Express.req.
+ * @param {Response} res - Express.res.
+ * @param {NextFunction} next - Express.next.
  */
 export function ErrorHandler(data: any, req: Request, res: Response, next: NextFunction) {
   if (data instanceof HttpResponse) {

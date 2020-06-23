@@ -11,23 +11,20 @@
  * If you want to use this, please send a message for me and keep the information in the header.
  */
 
- export class EnvIsNotGivenError extends Error {
-  private envName: string;
+export class EnvIsNotGivenError extends Error {
   constructor(envName: string) {
-    super();
-    this.envName = envName;
-  }
-
-  toString() {
-    return `ENV: ${this.envName} is not given`;
+    super(`ENV: ${envName} is not given`);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, EnvIsNotGivenError.prototype);
   }
 }
 
 export class EnvUtil {
   static getEnv(envName: string): string {
     const data: string | undefined = process.env[envName];
-    if (typeof data === "undefined") {
-      console.log(envName, "is not given");
+    if (typeof data === 'undefined') {
+      console.log(envName, 'is not given');
       throw new EnvIsNotGivenError(envName);
     }
     return data;

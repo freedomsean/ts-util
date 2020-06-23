@@ -11,17 +11,19 @@
  * If you want to use this, please send a message for me and keep the information in the header.
  */
 
-import * as redis from "redis";
-import * as util from "util";
+import * as redis from 'redis';
+import * as util from 'util';
 
 export class RedisOptionMissedError extends Error {
-  toString() {
-    return "redis connection option missed";
+  constructor() {
+    super('redis connection option missed');
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, RedisOptionMissedError.prototype);
   }
 }
 
 export class RedisClient {
-
   private static instance: RedisClient | undefined;
   private static connectOption: redis.ClientOpts;
   private static isInit: boolean = false;
@@ -29,8 +31,9 @@ export class RedisClient {
   private client: redis.RedisClient | undefined;
 
   /**
-   * To get the instance of redis client. Before calling getInstance, it must call setConnectOption
-   * @throws RedisOptionMissedError
+   * To get the instance of redis client. Before calling getInstance, it must call setConnectOption.
+   *
+   * @throws RedisOptionMissedError.
    */
   static getInstance() {
     if (RedisClient.instance) {
@@ -46,8 +49,9 @@ export class RedisClient {
   }
 
   /**
-   * To set options of the connection. If the option is never set, the client will throw exception
-   * @param connectOption including host, port and all options you can defined in redis lib
+   * To set options of the connection. If the option is never set, the client will throw exception.
+   *
+   * @param {redis.ClientOpts} connectOption - Including host, port and all options you can defined in redis lib.
    */
   static setConnectOption(connectOption: redis.ClientOpts) {
     RedisClient.instance = undefined;
@@ -61,7 +65,7 @@ export class RedisClient {
   }
 
   /**
-   * Only be called when the connection is lost
+   * Only be called when the connection is lost.
    */
   private createClient(): redis.RedisClient {
     if (this.client) {
@@ -72,8 +76,9 @@ export class RedisClient {
   }
 
   /**
-   * get string by key
-   * @param key
+   * Get string by key.
+   *
+   * @param {string} key - Key.
    */
   async get(key: string): Promise<string> {
     if (!this.client!.connected) {
@@ -86,13 +91,14 @@ export class RedisClient {
   }
 
   /**
-   * set string by key
-   * @param key
-   * @param value
-   * @param mode
-   * @param duration
+   * Set string by key.
+   *
+   * @param {string} key - Key.
+   * @param {any} value - Value.
+   * @param {string} mode - Mode.
+   * @param {number} duration - Duration.
    */
-  async set(key: string, value: any, mode: string = "EX", duration: number = 86400): Promise<void> {
+  async set(key: string, value: any, mode: string = 'EX', duration: number = 86400): Promise<void> {
     if (!this.client?.connected) {
       this.createClient();
     }
@@ -101,8 +107,9 @@ export class RedisClient {
   }
 
   /**
-   * delete by key
-   * @param keys
+   * Delete by key.
+   *
+   * @param {string | string[]} keys - Deleted keys.
    */
   async del(keys: string | string[]): Promise<void> {
     if (!this.client!.connected) {
@@ -112,9 +119,8 @@ export class RedisClient {
     await delFunc(keys);
   }
 
-
   /**
-   * disconnect
+   * Disconnect.
    */
   async quit(): Promise<void> {
     if (this.client?.connected) {
@@ -126,7 +132,9 @@ export class RedisClient {
   }
 
   /**
-   * end without any waiting
+   * End without any waiting.
+   *
+   * @param {boolean} flush - Whether need to flush.
    */
   async end(flush?: boolean): Promise<void> {
     if (this.client?.connected) {

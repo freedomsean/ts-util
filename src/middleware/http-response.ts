@@ -12,31 +12,31 @@
  */
 
 /**
- * Http Response Code
+ * Http Response Code.
  */
 export type ResponseCode = {
   /**
-   * Http status code
+   * Http status code.
    */
   statusCode?: any;
 
   /**
-   * If user had set that, it will have the different code in the body
+   * If user had set that, it will have the different code in the body.
    */
   bodyCode?: number;
 };
 
 /**
- * Abstract Http Response
+ * Abstract Http Response.
  */
 export abstract class HttpResponse {
   /**
-   * Http status code
+   * Http status code.
    */
   statusCode: number;
 
   /**
-   * If user had set that, it will have the different code in the body
+   * If user had set that, it will have the different code in the body.
    */
   bodyCode: number;
 
@@ -45,8 +45,8 @@ export abstract class HttpResponse {
   }
 
   private processCode(defaultCode: number, code?: ResponseCode) {
-    const statusCode = code && typeof code.statusCode === "number" ? code.statusCode : defaultCode;
-    const bodyCode = code && typeof code.bodyCode === "number" ? code.bodyCode : statusCode;
+    const statusCode = code && typeof code.statusCode === 'number' ? code.statusCode : defaultCode;
+    const bodyCode = code && typeof code.bodyCode === 'number' ? code.bodyCode : statusCode;
     this.statusCode = statusCode;
     this.bodyCode = bodyCode;
   }
@@ -70,7 +70,7 @@ export abstract class HttpResponse {
 }
 
 /**
- * Success Response, 2XX
+ * Success Response, 2XX.
  */
 export class HttpSuccessResponse extends HttpResponse {
   data: any;
@@ -91,7 +91,7 @@ export class HttpSuccessResponse extends HttpResponse {
 }
 
 /**
- * Not Modify Response, 304, no any content
+ * Not Modify Response, 304, no any content.
  */
 export class HttpNotModifyResponse extends HttpResponse {
   constructor() {
@@ -106,9 +106,9 @@ export class HttpNotModifyResponse extends HttpResponse {
 }
 
 export class HttpBadRequestErrorResponse extends HttpResponse {
-  errors: { location?: string; msg: string; param: string; }[];
+  errors: { location?: string; msg: string; param: string }[];
 
-  constructor(errors: { location?: string; msg: string; param: string; }[], code?: ResponseCode) {
+  constructor(errors: { location?: string; msg: string; param: string }[], code?: ResponseCode) {
     super(400, code);
     this.errors = errors;
   }
@@ -123,7 +123,7 @@ export class HttpBadRequestErrorResponse extends HttpResponse {
 }
 
 /**
- * System Error Response, 5XX
+ * System Error Response, 5XX.
  */
 export class HttpSystemErrorResponse extends HttpResponse {
   error: any;

@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "baseUrl": "./src",
-    "skipLibCheck": true,
-    "pretty": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "inlineSourceMap": true,
+    "module": "CommonJS",
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "inlineSourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": true,
+    "outDir": "./dist",
     "lib": [
       "esnext"
     ]
@@ -17,7 +21,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "tests/**/*.ts"
+    "node_modules"
   ]
 }

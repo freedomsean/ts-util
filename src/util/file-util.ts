@@ -10,71 +10,63 @@
  * This file can be used in the commercial or personal purpose.
  * If you want to use this, please send a message for me and keep the information in the header.
  */
-import * as fs from "fs";
-import * as Path from "path";
-import { Stream, Transform, Writable } from "stream";
-import * as util from "util";
+import * as fs from 'fs';
+import * as Path from 'path';
+import { Stream, Transform, Writable } from 'stream';
+import * as util from 'util';
 
 import {
   DecryptTransformStream,
   EncryptTransformStream,
   WriteDecryptMessageStream,
-  WriteEncryptMessageStream,
-} from "./EncryptUtil";
+  WriteEncryptMessageStream
+} from './encrypt-util';
 
+export type WriteFileOptions =
+  | {
+      encoding?: string | null;
+      mode?: number | string;
+      flag?: string;
+      autoMkdir?: boolean;
+    }
+  | string
+  | null;
 
-export type WriteFileOptions = {
-  encoding?: string | null;
-  mode?: number | string;
-  flag?: string;
-  autoMkdir?: boolean
-} | string | null;
-
-export type StreamWriteOptions = {
-  flags?: string;
-  encoding?: string;
-  fd?: number;
-  mode?: number;
-  autoClose?: boolean;
-  start?: number;
-} | string;
+export type StreamWriteOptions =
+  | {
+      flags?: string;
+      encoding?: string;
+      fd?: number;
+      mode?: number;
+      autoClose?: boolean;
+      start?: number;
+    }
+  | string;
 
 export class FileIsAlreadyExistedError extends Error {
-  path: string;
-
   constructor(path: string) {
-    super();
-    this.path = path;
-  }
-
-  toString() {
-    return `File is already existed: ${this.path}`;
+    super(`File is already existed: ${path}`);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, FileIsAlreadyExistedError.prototype);
   }
 }
 
 export class FileNotFoundError extends Error {
-  path: string;
-
   constructor(path: string) {
-    super();
-    this.path = path;
-  }
-
-  toString() {
-    return `File not found: ${this.path}`;
+    super(`File not found: ${path}`);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, FileNotFoundError.prototype);
   }
 }
 
 export class IsDirectoryError extends Error {
-  path: string;
-
   constructor(path: string) {
-    super();
-    this.path = path;
-  }
-
-  toString() {
-    return `It is a file: ${this.path}`;
+    super(`It is a file: ${path}`);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, IsDirectoryError.prototype);
   }
 }
 
@@ -161,27 +153,31 @@ export class CopyWithDecrypt extends CopyWithKeyStrategy {
 
 export class FileUtil {
   /**
-   * Write file, if options.autoMkdir is true, it will help generate directory
-   * @param path
-   * @param content
-   * @param options
+   * Write file, if options.autoMkdir is true, it will help generate directory.
+   *
+   * @param {string} path - Path string.
+   * @param {string | Buffer} content - Content you want to write.
+   * @param {fs.WriteFileOptions} options - Options.
    */
   static async writeFile(path: string, content: string | Buffer, options?: WriteFileOptions): Promise<void> {
-    if (typeof options === "object" && options?.autoMkdir) {
+    if (typeof options === 'object' && options?.autoMkdir) {
       const dirName = Path.dirname(path);
       await FileUtil.mkdir(dirName, { recursive: true });
     }
     const write = util.promisify(fs.writeFile.bind(fs));
-    await write(path, content, options);
+    await write(path, content, options as fs.WriteFileOptions);
   }
 
   /**
-   * Read File, if file does not exist, it will throw FileNotFoundError
-   * @param path
-   * @param options
-   * @throws FileNotFoundError
+   * Read File, if file does not exist, it will throw FileNotFoundError.
+   *
+   * @param {string} path - Path string.
+   * @param {object} options - Encoding and flag.
+   * @param {null} options.encoding - Encoding.
+   * @param {string} options.flag - Flag.
+   * @throws FileNotFoundError.
    */
-  static async readFile(path: string, options?: { encoding?: null; flag?: string; }): Promise<Buffer> {
+  static async readFile(path: string, options?: { encoding?: null; flag?: string }): Promise<Buffer> {
     if (!FileUtil.exists(path)) {
       throw new FileNotFoundError(path);
     }
@@ -192,8 +188,9 @@ export class FileUtil {
   }
 
   /**
-   * Remove all files or directories recursively
-   * @param path file path
+   * Remove all files or directories recursively.
+   *
+   * @param {string} path - File path.
    */
   static async unlink(path: string): Promise<void> {
     if (!FileUtil.exists(path)) {
@@ -206,7 +203,7 @@ export class FileUtil {
       if (files.length === 0) {
         await FileUtil.rmdir(path);
       } else {
-        const allUnlinkPromises = files.map(file => {
+        const allUnlinkPromises = files.map((file) => {
           return FileUtil.unlink(Path.join(path, file));
         });
         await Promise.all(allUnlinkPromises);
@@ -219,8 +216,9 @@ export class FileUtil {
   }
 
   /**
-   * Get the names of the files in the specific path
-   * @param path
+   * Get the names of the files in the specific path.
+   *
+   * @param {string} path - File path.
    */
   static async readdir(path: string): Promise<string[]> {
     if (!FileUtil.exists(path)) {
@@ -233,8 +231,9 @@ export class FileUtil {
   }
 
   /**
-   * Get the file stat
-   * @param path
+   * Get the file stat.
+   *
+   * @param {string} path - File path.
    */
   static async lstat(path: string): Promise<fs.Stats> {
     if (!FileUtil.exists(path)) {
@@ -247,45 +246,49 @@ export class FileUtil {
   }
 
   /**
-   * Synchronously check
-   * @param path
+   * Synchronously check.
+   *
+   * @param {string} path - File path.
    */
   static exists(path: string): boolean {
-    // exists is deprecated
+    // Exists is deprecated
     return fs.existsSync(path);
   }
 
   /**
-   * Get the dir name
-   * @param path
+   * Get the dir name.
+   *
+   * @param {string} path - File path.
    */
   static getDirName(path: string): string {
     return Path.dirname(path);
   }
 
   /**
-   * Get the base name
-   * @param path
+   * Get the base name.
+   *
+   * @param {string} path - File path.
    */
   static getBaseName(path: string): string {
     return Path.basename(path);
   }
 
   /**
-   * Make directory
-   * @param path
-   * @param options
+   * Make directory.
+   *
+   * @param {string} path - File path.
+   * @param {number | string | fs.MakeDirectoryOptions} options - Options.
    */
   static async mkdir(path: string, options?: number | string | fs.MakeDirectoryOptions): Promise<void> {
     const mkdir = util.promisify(fs.mkdir.bind(fs));
     await mkdir(path, options);
   }
 
-
   /**
-   * Rename file or directory
-   * @param oldPath
-   * @param newPath
+   * Rename file or directory.
+   *
+   * @param {string} oldPath - Old file path.
+   * @param {string} newPath - New file path.
    */
   static async rename(oldPath: string, newPath: string): Promise<void> {
     const oldIsExist = FileUtil.exists(oldPath);
@@ -303,10 +306,10 @@ export class FileUtil {
   }
 
   /**
-  * Remove directory. To be private method, because the client can use unlink to do that
-  * @param path
-  * @param options
-  */
+   * Remove directory. To be private method, because the client can use unlink to do that.
+   *
+   * @param {string} path - File path.
+   */
   private static async rmdir(path: string): Promise<void> {
     if (!FileUtil.exists(path)) {
       throw new FileNotFoundError(path);
@@ -317,10 +320,11 @@ export class FileUtil {
   }
 
   /**
-   * Copy the file or the directory
-   * @param from
-   * @param to
-   * @param excludes the list which will ignore to copy
+   * Copy the file or the directory.
+   *
+   * @param {CopyStrategy} strategy - Strategy.
+   * @param {object} options - Options.
+   * @param {string[] | RegExp[]} options.excludes - Excludes.
    */
   static async copy(strategy: CopyStrategy, options: { excludes?: (string | RegExp)[] } = {}): Promise<void> {
     const { from, to } = strategy;
@@ -328,8 +332,8 @@ export class FileUtil {
     const toIsExisted = await FileUtil.exists(to);
     const excludes = Array.isArray(options.excludes) ? options.excludes : [];
 
-    // to avoid the excludes at first round
-    for (let exclude of excludes) {
+    // To avoid the excludes at first round
+    for (const exclude of excludes) {
       if (from.match(exclude)) {
         return;
       }
@@ -342,22 +346,27 @@ export class FileUtil {
         await FileUtil.mkdir(to, { recursive: true });
       }
 
-      if (to[to.length - 1] === "/" || to[to.length - 1] === "/") {
+      if (to[to.length - 1] === '/' || to[to.length - 1] === '/') {
         return await FileUtil.copy(strategy.clone(from, Path.join(to, Path.basename(from))), options);
       }
       const files = await FileUtil.readdir(from);
 
-      // to reduce the useless action
-      const promises = files.filter(ele => !excludes.reduce((accumulation, current) => accumulation || Boolean(ele.match(current)) , false)).map(ele => FileUtil.copy(strategy.clone(Path.join(from, ele), Path.join(to, ele)), options));
+      // To reduce the useless action
+      const promises = files
+        .filter(
+          (ele) => !excludes.reduce((accumulation, current) => accumulation || Boolean(ele.match(current)), false)
+        )
+        .map((ele) => FileUtil.copy(strategy.clone(Path.join(from, ele), Path.join(to, ele)), options));
 
       await Promise.all(promises);
     }
   }
 
   /**
-   * Copy the file by stream
-   * @param from file path
-   * @param to
+   * Copy the file by stream.
+   *
+   * @param {string} from - From file path.
+   * @param {string} to - To file path.
    */
   static async copyFile(from: string, to: string): Promise<void> {
     await FileUtil.unlink(to);
@@ -365,10 +374,11 @@ export class FileUtil {
   }
 
   /**
-   * Copy file with encryption
-   * @param publicKeyPath
-   * @param from
-   * @param to
+   * Copy file with encryption.
+   *
+   * @param {string} publicKeyPath - Public key file path.
+   * @param {string} from - From file path.
+   * @param {string} to - To file path.
    */
   static async copyFileWithEncryption(publicKeyPath: string, from: string, to: string): Promise<void> {
     const writable = new WriteEncryptMessageStream(to);
@@ -378,10 +388,11 @@ export class FileUtil {
   }
 
   /**
-   * Copy file with decryption
-   * @param privateKeyPath
-   * @param from
-   * @param to
+   * Copy file with decryption.
+   *
+   * @param {string} privateKeyPath - Private key file path.
+   * @param {string} from - From file path.
+   * @param {string} to - To file path.
    */
   static async copyFileWithDecryption(privateKeyPath: string, from: string, to: string): Promise<void> {
     const writable = new WriteDecryptMessageStream(to);
@@ -391,9 +402,10 @@ export class FileUtil {
   }
 
   /**
-   * Copy file by the given streams, if the file is directory, it will throw error
-   * @param from file path
-   * @param outStreams it can be writable or transform, but the latest stream must be writable
+   * Copy file by the given streams, if the file is directory, it will throw error.
+   *
+   * @param {string} from - File path.
+   * @param {Writable[] | Transform[]} outStreams - It can be writable or transform, but the latest stream must be writable.
    */
   static async copyFileByStream(from: string, outStreams: (Writable | Transform)[]): Promise<void> {
     const stats = await FileUtil.lstat(from);
@@ -403,12 +415,12 @@ export class FileUtil {
 
     let rs: Stream = fs.createReadStream(from, { highWaterMark: 128 });
     for (let i = 0; i < outStreams.length; i++) {
-      // assign rs again, in order to have the effect of chain
+      // Assign rs again, in order to have the effect of chain
       rs = rs.pipe(outStreams[i]);
     }
     return new Promise((resolve, reject) => {
-      outStreams[outStreams.length - 1].on("finish", resolve);
-      outStreams[outStreams.length - 1].on("error", reject);
+      outStreams[outStreams.length - 1].on('finish', resolve);
+      outStreams[outStreams.length - 1].on('error', reject);
     });
   }
 }

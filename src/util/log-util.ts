@@ -11,10 +11,10 @@
  * If you want to use this, please send a message for me and keep the information in the header.
  */
 
-import * as winston from "winston";
+import * as winston from 'winston';
 
 /**
- * Log data to file
+ * Log data to file.
  */
 export class LogUtil {
   private _logger: winston.Logger;
@@ -22,11 +22,14 @@ export class LogUtil {
   private static _CONFIG: winston.LoggerOptions;
 
   private constructor(config: winston.LoggerOptions) {
-    let realConfig = Object.assign({}, {
+    const realConfig = {
       format: winston.format.json(),
-      transports: []
-    }, config);
-    this._logger = winston.createLogger(realConfig);
+      transports: [],
+      ...config
+    };
+    this._logger = winston.createLogger<winston.DefaulLevels>(
+      realConfig as winston.LoggerOptions<winston.DefaulLevels>
+    );
   }
 
   static getInstance(): LogUtil {
@@ -41,15 +44,15 @@ export class LogUtil {
   }
 
   info(data: string, ...meta: any[]) {
-    this.log("info", data, ...meta);
+    this.log('info', data, ...meta);
   }
 
   debug(data: string, ...meta: any[]) {
-    this.log("debug", data, ...meta);
+    this.log('debug', data, ...meta);
   }
 
   error(data: string, ...meta: any[]) {
-    this.log("error", data, ...meta);
+    this.log('error', data, ...meta);
   }
 
   log(level: string, data: string, ...meta: any[]) {
