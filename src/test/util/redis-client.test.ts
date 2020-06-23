@@ -12,9 +12,9 @@ let rawSetFunc: Function;
 let rawDelFunc: Function;
 let rawQuitFunc: Function;
 
-describeExecutableTest('Test RedisClient without setting connection option', () => {
+describe('Test RedisClient without setting connection option', () => {
   test('Test RedisClient without setting connection option', async () => {
-    await expect(RedisClient.getInstance().quit()).rejects.toThrowError(RedisOptionMissedError);
+    expect(() => RedisClient.getInstance()).toThrowError(RedisOptionMissedError);
   });
 });
 
