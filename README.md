@@ -38,20 +38,15 @@ To Note that, test cases of `RedisClient` are skipped. If you want to test that,
 
 ```
 src
-├── middleware                
-│   ├── ErrorHandler.ts                 # express middleware, to have a general response format 
-│   └── HttpResponse.ts                 # all format developed already
+├── middleware
+│   ├── error-handler.ts    # express middleware
+│   └── http-response.ts    # formats of http response
 └── util
-    ├── EncryptUtil.ts                  # to encrypt the file/string
-    ├── EnvUtil.ts                      # read the process.env
-    ├── FileUtil.ts                     # process files
-    ├── LogUtil.ts                      # log data by winston
-    ├── RedisClient.ts                  # facade for redis
-    ├── RegexUtil.ts                    # regex utilities
-    └── RequestUtil.ts                  # http request by axios
+    ├── encrypt-util.ts     # encrypt string or file
+    ├── env-util.ts         # read the process.env
+    ├── file-util.ts        # process files
+    ├── log-util.ts         # log by winston
+    ├── redis-client.ts     # facade for redis
+    ├── regex-util.ts       # regex utilities
+    └── request-util.ts     # http request by axios
 ```
-
-## TODO
-
-- To make sure both windows and linux can use the same npm script
-
